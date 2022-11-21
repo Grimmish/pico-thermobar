@@ -59,7 +59,9 @@ greenled.toggle()
 # Encoding formats for pack/unpack on sender/receiver must match!
 #    https://docs.python.org/3/library/struct.html
 # The format (first arg) explains the nature of each element, in order.
-# HINT: Use ord() and chr() to convert characters to/from 8-bit unsigned bytes
+#
+# ord() and chr() are handy ways to convert characters to/from 8-bit
+# unsigned bytes.
 # Example:
 #    struct.pack("<BfBf", ord("T"), 68.231, ord("H"), 34.0)
 
