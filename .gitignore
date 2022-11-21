@@ -1,0 +1,8 @@
+!.gitignore
+pico-thermobar-backups
+pico-thermobar.kicad*
+pico-thermobar-cache.lib
+pico-thermobar.sch*
+pico-thermobar.net
+pico-thermobar.pro
+firmware/radio-experiments
