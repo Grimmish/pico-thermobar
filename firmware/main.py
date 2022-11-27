@@ -12,7 +12,6 @@ thermobar_extra = [
     Pin(18, Pin.IN)  # SDD, unused
 ]
 
-
 import bmp280   # https://github.com/dafvid/micropython-bmp280
 import nrf24l01 # https://github.com/micropython/micropython-lib/tree/master/micropython/drivers/radio/nrf24l01
 import ustruct as struct
@@ -22,8 +21,12 @@ import ustruct as struct
 with open('config.txt') as uid:
     myID = int(uid.read())
 
+# Another text file that contains only a 8-bit integer
+with open('zone.txt') as zoneid:
+    zoneID = int(zoneid.read())
+
 battery = ADC(28)
-sampleperiod_ms = 1000
+sampleperiod_ms = 10000
 
 nrfcfg = {
     "spi": 1,
@@ -48,6 +51,8 @@ nrf.reg_write(nrf24l01.DYNPD, 1) # Enable dynamic payload construction
 nrf.reg_write(0x1D, 0x04) # Enable dynamic payload support in firmware
 nrf.open_tx_pipe(b'KKKKK')
 nrf.open_rx_pipe(1, b'OOOOO') 
+nrf.set_power_speed(nrf24l01.POWER_3, nrf24l01.SPEED_250K)
+nrf.reg_write(0x04, 0b10001000) # Retry 8x at 1ms intervals
 
 # Identify if we're running on USB power vs. battery
 usbref = Pin(24, Pin.IN)
@@ -68,6 +73,7 @@ greenled.toggle()
 while True:
     payload = {
         "I": myID,
+        "Z": zoneID,
         "x": time.ticks_ms() // 1000,
         "B": (battery.read_u16() / 2**16) * 2 * 3.3,
         "T": (thermobar.temperature * 9 / 5) + 32,
